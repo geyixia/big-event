@@ -33,7 +33,9 @@ html, body {
     justify-content: flex-end;*/
     text-align: right;
   }
-  
+  #registerForm{
+    display: none;
+  }
   .layui-form-item {
     position: relative;
   }

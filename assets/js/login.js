@@ -15,10 +15,19 @@ form.verify({
       if (!reg.test(value)) {
         return '密码必须是6位数字'
       }
+    },
+
+  // 验证确认密码必须和原有密码一致
+  same: function (value) {
+    // 获取原始密码
+    var pwd = $('#registerForm input[type=password]').val()
+    if (pwd !== value) {
+      return '两次输入的密码必须一致'
     }
+  }
   })
 // 控制表单的提交
-$('.layui-form').submit(function (e) {
+$('#loginForm').submit(function (e) {
     // 阻止表单默认提交行为
     e.preventDefault()
     // 获取表单输入域的用户名和密码
@@ -34,9 +43,51 @@ $('.layui-form').submit(function (e) {
       success: function (res) {
         // 登录成功后，跳转到主页面
         if (res.status === 0) {
+          //把登陆成功的标志位存储在客户端
+          localStorage.setItem('mytoken',res.token)
           location.href = './index.html'
         }
       }
     })
   })
+  // 控制登录表单和注册表单的切换
+  // 登录表单的底部链接
+  $('#loginForm a').click(function () {
+    $('#loginForm').hide()
+    $('#registerForm').show()
+})
+
+// 注册表单的地步链接
+  $('#registerForm a').click(function () {
+   // 点击后应该做什么？切换表单的显示和隐藏
+    $('#loginForm').show()
+   $('#registerForm').hide()
+  })
+
+  // 实现注册功能
+  // - 监听注册提交事件  阻止默认提交行为 调用接口提交表单 注册成功后显示登陆表单
+  // 控制注册表单的提交
+  $('#registerForm').submit(function (e) {  
+    e.preventDefault()
+    // 获取表单数据(表单输入域必须提供name属性，name的值必须和接口文档要求一致)
+    // 验证两次密码是否一致
+    var formData = $(this).serialize()
+    // 调用接口进行注册
+    $.ajax({
+      type: 'post',
+      url: 'http://ajax.frontend.itheima.net/api/reguser',
+      data: formData,
+      success: function (res) {
+        if (res.status === 0) {
+        // 注册成功，显示登陆框
+          $('#registerForm a').click()
+        }else{
+          // 注册失败
+          // layer是一个独立的模块，默认可以直接使用
+            layer.msg(res.message)
+        }
+     }
+   })
+  })
+
 })

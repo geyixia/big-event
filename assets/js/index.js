@@ -1,4 +1,12 @@
 $(function () {
+    // 判断token是否存在 是否登录成功
+    // 存储登录成功的标志  
+    // 页面中需要判断登录成功的标志是否存在
+     var mytoken=localStorage.getItem('mytoken')
+     if(!mytoken){
+         location.href='./login.html'
+     }
+     
     // --------------  获取用户信息，并渲染到页面中 ----------
     getUserInfo();
 
